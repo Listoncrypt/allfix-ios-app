@@ -35,15 +35,11 @@ jobs:
       - name: 5. Fetch Dart & Flutter Dependencies
         run: flutter pub get
 
-      - name: 6. Install CocoaPods Dependencies
-        run: |
-          cd ios
-          pod install
-          cd ..
+      - name: 6. Configure iOS Pods & Build Settings
+        run: flutter build ios --config-only --release --no-codesign
 
       - name: 7. Build iOS Release Bundle (No Code-Sign)
-        run: |
-          flutter build ios --release --no-codesign
+        run: flutter build ios --release --no-codesign
 
       - name: 8. Package into .ipa Installer
         run: |
