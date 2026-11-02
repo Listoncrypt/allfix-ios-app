@@ -33,22 +33,21 @@ jobs:
         run: flutter doctor -v
 
       - name: 5. Fetch Dart & Flutter Dependencies
-        run: flutter pub get
+        run: |
+          flutter config --no-enable-swift-package-manager
+          flutter pub get
 
-      - name: 6. Configure iOS Pods & Build Settings
-        run: flutter build ios --config-only --release --no-codesign
-
-      - name: 7. Build iOS Release Bundle (No Code-Sign)
+      - name: 6. Build iOS Release Bundle (No Code-Sign)
         run: flutter build ios --release --no-codesign
 
-      - name: 8. Package into .ipa Installer
+      - name: 7. Package into .ipa Installer
         run: |
           mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
           zip -r -q ALLFIX_iOS.ipa Payload
           echo "Package completed: ALLFIX_iOS.ipa"
 
-      - name: 9. Upload ALLFIX .ipa Artifact
+      - name: 8. Upload ALLFIX .ipa Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ALLFIX-iOS-iPhone-Package
@@ -56,13 +55,13 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
-      - name: 10. Compress and Upload Runner.app for Xcode/TestFlight
+      - name: 9. Compress and Upload Runner.app for Xcode/TestFlight
         run: |
           cd build/ios/iphoneos
           zip -r -q Runner.app.zip Runner.app
         continue-on-error: true
 
-      - name: 11. Upload Runner.app.zip Artifact
+      - name: 10. Upload Runner.app.zip Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ALLFIX-Runner-App-Bundle

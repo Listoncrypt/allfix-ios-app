@@ -18,6 +18,7 @@ profile
 xcuserdata
 *.xcworkspace
 !default.xcworkspace
+!Runner.xcworkspace
 Generated.xcconfig
 Flutter/App.framework
 Flutter/Flutter.framework
