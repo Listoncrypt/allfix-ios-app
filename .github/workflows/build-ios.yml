@@ -1,0 +1,75 @@
+name: Build iOS (iPhone) App
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  build-ios:
+    name: Compile iOS .ipa on Apple Silicon Runner
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 3. Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: 4. Check Flutter Environment
+        run: flutter doctor -v
+
+      - name: 5. Fetch Dart & Flutter Dependencies
+        run: flutter pub get
+
+      - name: 6. Install CocoaPods Dependencies
+        run: |
+          cd ios
+          pod install
+          cd ..
+
+      - name: 7. Build iOS Release Bundle (No Code-Sign)
+        run: |
+          flutter build ios --release --no-codesign
+
+      - name: 8. Package into .ipa Installer
+        run: |
+          mkdir -p Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -r -q ALLFIX_iOS.ipa Payload
+          echo "Package completed: ALLFIX_iOS.ipa"
+
+      - name: 9. Upload ALLFIX .ipa Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ALLFIX-iOS-iPhone-Package
+          path: ALLFIX_iOS.ipa
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: 10. Compress and Upload Runner.app for Xcode/TestFlight
+        run: |
+          cd build/ios/iphoneos
+          zip -r -q Runner.app.zip Runner.app
+        continue-on-error: true
+
+      - name: 11. Upload Runner.app.zip Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ALLFIX-Runner-App-Bundle
+          path: build/ios/iphoneos/Runner.app.zip
+          retention-days: 14
+          if-no-files-found: warn

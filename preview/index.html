@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALLFIX Services Xpress — Flutter Android Mobile App Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-green: #087A3A;
+      --green-dark: #07552D;
+      --green-light: #E8F2EB;
+      --dark-neutral: #171C19;
+      --body-neutral: #56615A;
+      --bg-subtle: #F4F6F4;
+      --card-border: #D8DEDA;
+      --surface-white: #FFFFFF;
+      --urgency-high: #DC2626;
+      --urgency-medium: #D97706;
+      --urgency-low: #087A3A;
+      --whatsapp-green: #25D366;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #E9EEEA;
+      color: var(--dark-neutral);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
+    }
+
+    /* Top Simulator Controls Banner */
+    .simulator-header {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      display: none;
+      color: #94A3B8;
+      font-size: 13px;
+    }
+    .simulator-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(22, 136, 61, 0.2);
+      color: #4ADE80;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      border: 1px solid rgba(74, 222, 128, 0.3);
+    }
+
+    /* Device Container */
+    .device-frame {
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;
+      min-height: 560px;
+      background: var(--bg-subtle);
+      border-radius: 0;
+      border: 0;
+      box-shadow: none;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Phone Status Bar */
+    .status-bar {
+      height: 28px;
+      padding: 0 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dark-neutral);
+      background: var(--surface-white);
+      z-index: 50;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+    }
+    .status-icons {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--dark-neutral);
+    }
+    .camera-pill {
+      width: 80px;
+      height: 20px;
+      background: #000;
+      border-radius: 12px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 10px;
+      display: none;
+    }
+
+    /* App Header Bar */
+    .app-bar {
+      height: 56px;
+      background: var(--surface-white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--card-border);
+      z-index: 40;
+    }
+    .app-brand {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: 0.25px;
+      color: var(--dark-neutral);
+    }
+    .app-brand > span { display: block; }
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary-green);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 15px;
+    }
+    .brand-tag {
+      font-size: 10px;
+      font-weight: 800;
+      background: var(--green-light);
+      color: var(--primary-green);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 2px;
+    }
+    .app-bar-actions {
+      display: flex;
+      gap: 4px;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 17px;
+      color: var(--dark-neutral);
+      cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .icon-btn:hover {
+      background: var(--bg-subtle);
+    }
+
+    /* Main Scrollable Screen Body */
+    .screen-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    /* Tab Pages */
+    .tab-page {
+      display: none;
+      padding-bottom: 90px;
+    }
+    .tab-page.active {
+      display: block;
+      animation: screen-enter 180ms ease-out both;
+    }
+    @keyframes screen-enter {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes card-enter {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Common Card */
+    .card {
+      background: var(--surface-white);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    /* Verified Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 5px;
+      border: 1px solid rgba(22, 136, 61, 0.2);
+    }
+
+    /* Buttons */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 48px;
+      border-radius: 8px;
+      font-size: 14.5px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--primary-green);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--green-dark);
+    }
+    .btn-whatsapp {
+      background: var(--whatsapp-green);
+      color: white;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--primary-green);
+      color: var(--primary-green);
+    }
+
+    /* Inputs */
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--dark-neutral);
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--surface-white);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--dark-neutral);
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .form-control:focus {
+      border-color: var(--primary-green);
+      box-shadow: 0 0 0 2px rgba(22, 136, 61, 0.15);
+    }
+
+    /* Home Hero */
+    .home-dashboard { padding: 14px 16px 0; }
+    .home-welcome { font-size: 19px; font-weight: 700; color: var(--dark-neutral); }
+    .home-location { display: flex; align-items: center; gap: 5px; margin-top: 4px; font-size: 12px; color: var(--body-neutral); }
+    .book-action {
+      width: 100%;
+      min-height: 60px;
+      margin-top: 14px;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--green-dark);
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 140ms ease, background-color 140ms ease;
+    }
+    .book-action .book-title { display: block; font-size: 14px; font-weight: 700; }
+    .book-action .book-subtitle { display: block; margin-top: 2px; font-size: 11px; color: #D5E7DA; }
+    .book-action .book-arrow { margin-left: auto; }
+
+    /* Stats Row (Compliance: 1+ Verified Artisans) */
+    .stats-row {
+      display: flex;
+      background: var(--surface-white);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 9px 6px;
+      margin-top: 12px;
+      text-align: center;
+    }
+    .stat-item {
+      flex: 1;
+    }
+    .stat-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--dark-neutral);
+      margin-top: 4px;
+    }
+    .stat-lbl {
+      font-size: 11px;
+      color: var(--body-neutral);
+      margin-top: 2px;
+    }
+    .stat-divider {
+      width: 1px;
+      height: 36px;
+      background: var(--card-border);
+    }
+    .stats-row i { color: var(--primary-green) !important; }
+
+    /* Category Grid */
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--dark-neutral);
+      margin: 20px 16px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cat-grid {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-card {
+      background: var(--surface-white);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      flex: 0 0 104px;
+      min-height: 104px;
+      padding: 10px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 140ms ease;
+      animation: card-enter 220ms ease-out both;
+    }
+    .cat-card:hover {
+      border-color: var(--card-border);
+      transform: none;
+      box-shadow: none;
+    }
+    .cat-icon {
+      width: 30px;
+      height: 28px;
+      background: transparent;
+      color: var(--primary-green);
+      border-radius: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    .cat-name {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--dark-neutral);
+      line-height: 1.25;
+    }
+
+    /* Property Horizontal Carousel */
+    .property-carousel {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 0 18px;
+      scrollbar-width: none;
+    }
+    .property-carousel::-webkit-scrollbar { display: none; }
+    .prop-card-h {
+      flex: 0 0 248px;
+      background: var(--surface-white);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      animation: card-enter 220ms ease-out both;
+      transition: transform 140ms ease, border-color 140ms ease;
+    }
+    .empty-listing {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--surface-white);
+      color: var(--body-neutral);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .prop-img {
+      height: 104px;
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .prop-body {
+      padding: 12px;
+    }
+    .prop-price {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary-green);
+    }
+    .prop-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--dark-neutral);
+      margin: 4px 0 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .prop-loc {
+      font-size: 12px;
+      color: var(--body-neutral);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Promise Box */
+    .promise-box {
+      margin: 16px;
+      background: var(--surface-white);
+      color: var(--dark-neutral);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    /* Urgency Selector */
+    .urgency-grid {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .urgency-btn {
+      flex: 1;
+      padding: 10px 6px;
+      border-radius: 8px;
+      border: 1.5px solid var(--card-border);
+      background: var(--surface-white);
+      text-align: center;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .urgency-btn.selected-high {
+      border-color: var(--urgency-high);
+      background: #FEE2E2;
+      color: var(--urgency-high);
+    }
+    .urgency-btn.selected-med {
+      border-color: var(--urgency-medium);
+      background: #FEF3C7;
+      color: var(--urgency-medium);
+    }
+    .urgency-btn.selected-low {
+      border-color: var(--urgency-low);
+      background: var(--green-light);
+      color: var(--urgency-low);
+    }
+
+    /* Floating WhatsApp Button */
+    .fab-whatsapp {
+      position: absolute;
+      bottom: calc(76px + env(safe-area-inset-bottom));
+      right: 16px;
+      background: var(--whatsapp-green);
+      color: white;
+      width: 52px;
+      height: 52px;
+      padding: 0;
+      border-radius: 50%;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      z-index: 60;
+      transition: transform 0.2s;
+      animation: fab-enter 220ms ease-out both;
+    }
+    .fab-whatsapp:hover {
+      transform: scale(1.04);
+    }
+    @keyframes fab-enter {
+      from { opacity: 0; transform: translateY(5px) scale(0.94); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .fab-whatsapp span { display: none; }
+
+    /* Bottom Navigation Bar */
+    .nav-bar {
+      height: calc(68px + env(safe-area-inset-bottom));
+      background: var(--surface-white);
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 70;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #69756E;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: none;
+      transition: color 0.15s;
+    }
+    .nav-item.active {
+      color: var(--primary-green);
+    }
+    .nav-item i {
+      font-size: 18px;
+    }
+    .nav-item:active { transform: scale(0.96); }
+    .book-action:active, .cat-card:active, .prop-card-h:active,
+    .btn:active, .icon-btn:active { transform: scale(0.98); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+      .book-action:active, .cat-card:active, .prop-card-h:active,
+      .btn:active, .icon-btn:active, .nav-item:active { transform: none; }
+    }
+
+    /* Chips */
+    .chips-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 18px;
+      scrollbar-width: none;
+    }
+    .chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: var(--surface-white);
+      border: 1px solid var(--card-border);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--dark-neutral);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .chip.active {
+      background: var(--green-light);
+      border-color: var(--primary-green);
+      color: var(--green-dark);
+      font-weight: 700;
+    }
+
+    /* Modal dialog */
+    .modal-overlay {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-sheet {
+      background: var(--surface-white);
+      width: 100%;
+      max-height: 85%;
+      overflow-y: auto;
+      border-radius: 24px 24px 0 0;
+      padding: 20px;
+      animation: slideUp 0.25s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    /* Soft, editorial mobile language with ALLFIX green kept as the signal color. */
+    :root {
+      --bg-subtle: #F1F5F6;
+      --card-border: #E3EAEC;
+      --green-light: #E8F2EB;
+      --dark-neutral: #151B18;
+      --body-neutral: #5F6C70;
+    }
+    body { background: #EAF0F2; }
+    .device-frame { background: var(--bg-subtle); }
+    .app-bar { height: 56px; padding-inline: 18px; border-color: var(--card-border); }
+    .app-brand { font-size: 19px; letter-spacing: .1px; }
+    .icon-btn { width: 40px; height: 40px; border-radius: 10px; }
+    .screen-content { overscroll-behavior-y: contain; }
+    .tab-page { padding-bottom: 112px; }
+    .tab-page.active { animation: screen-enter 240ms cubic-bezier(.2,.75,.25,1) both; }
+    .home-dashboard { padding: 14px 16px 0; }
+    .home-welcome { font-size: 21px; font-weight: 700; letter-spacing: -.45px; }
+    .home-location { margin-top: 5px; font-size: 12px; }
+    .book-action {
+      min-height: 68px;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: #151B18;
+      box-shadow: 0 7px 18px rgba(21, 27, 24, .12);
+      transition: transform 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+    }
+    .book-action:hover { background: #232B27; }
+    .book-action .book-title { font-size: 14.5px; letter-spacing: -.1px; }
+    .book-action .book-subtitle { font-size: 11.5px; color: #D5DEDA; }
+    .stats-row {
+      margin-top: 12px;
+      padding: 10px 6px;
+      border-radius: 16px;
+      border-color: var(--card-border);
+      box-shadow: 0 5px 16px rgba(37, 54, 58, .045);
+    }
+    .stat-val { font-size: 16px; font-weight: 750; }
+    .stat-lbl { font-size: 10.5px; }
+    .stat-divider { height: 34px; }
+    .section-title {
+      margin-top: 19px;
+      margin-bottom: 9px;
+      font-size: 16.5px;
+      font-weight: 700;
+      letter-spacing: -.2px;
+    }
+    .cat-grid {
+      gap: 9px;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 16px;
+      padding-bottom: 2px;
+    }
+    .cat-card {
+      flex-basis: 108px;
+      min-height: 108px;
+      padding: 10px 9px;
+      border-radius: 17px;
+      border-color: var(--card-border);
+      box-shadow: 0 5px 14px rgba(37, 54, 58, .045);
+      scroll-snap-align: start;
+      transition: transform 150ms ease, border-color 150ms ease, background-color 150ms ease;
+    }
+    .cat-icon {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 8px;
+      border-radius: 12px;
+      background: var(--green-light);
+      font-size: 17px;
+    }
+    .cat-name { font-size: 10.8px; line-height: 1.25; font-weight: 650; }
+    .property-carousel { gap: 10px; padding-inline: 16px; }
+    .prop-card-h { border-radius: 17px; border-color: var(--card-border); box-shadow: 0 5px 16px rgba(37, 54, 58, .045); }
+    .empty-listing {
+      display: flex;
+      align-items: center;
+      min-height: 64px;
+      border-radius: 16px;
+      border-color: var(--card-border);
+      padding: 13px 14px;
+      box-shadow: 0 5px 16px rgba(37, 54, 58, .045);
+    }
+    .promise-box {
+      margin: 16px 16px 10px;
+      padding: 11px 12px;
+      border-radius: 16px;
+      border-color: #E0EAE3;
+      background: #F7FAF8;
+    }
+    .promise-box .icon-btn { background: white; border: 1px solid #E0EAE3; }
+    .fab-whatsapp {
+      width: 48px;
+      height: 48px;
+      right: 16px;
+      bottom: calc(82px + env(safe-area-inset-bottom));
+      box-shadow: 0 6px 16px rgba(12, 55, 31, .2);
+    }
+    .nav-bar {
+      height: calc(68px + env(safe-area-inset-bottom));
+      border-color: var(--card-border);
+      box-shadow: 0 -3px 16px rgba(37, 54, 58, .05);
+      backdrop-filter: blur(12px);
+    }
+    .nav-item { gap: 3px; font-size: 10px; font-weight: 600; }
+    .nav-item i {
+      width: 42px;
+      height: 27px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      font-size: 17px;
+      transition: background-color 150ms ease, transform 150ms ease;
+    }
+    .nav-item.active i { background: var(--green-light); }
+    .nav-item.active { font-weight: 700; }
+    .card { border-radius: 17px; border-color: var(--card-border); box-shadow: 0 5px 16px rgba(37, 54, 58, .04); }
+    .btn-primary { background: #151B18; }
+    .btn-primary:hover { background: #232B27; }
+    .btn-primary, .btn-outline, .btn-whatsapp { border-radius: 15px; }
+    .form-control { border-color: var(--card-border); border-radius: 14px; }
+    .form-control:focus { box-shadow: 0 0 0 3px rgba(8, 122, 58, .11); }
+    .badge { border-radius: 999px; }
+    .chip { border-radius: 999px; }
+    .urgency-btn { border-radius: 14px; }
+    .btn { transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease; }
+    .book-action:active, .cat-card:active, .prop-card-h:active,
+    .btn:active, .icon-btn:active { transform: scale(.975); }
+    .nav-item:active i { transform: scale(.94); }
+    :focus-visible { outline: 3px solid rgba(8, 122, 58, .3); outline-offset: 2px; }
+    @media (max-width: 360px) {
+      .home-dashboard { padding-inline: 14px; }
+      .section-title { margin-inline: 14px; }
+      .cat-grid { padding-inline: 14px; }
+      .cat-card { flex-basis: 98px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    /* Pastel travel-inspired ALLFIX skin; service content and actions stay native to ALLFIX. */
+    :root {
+      --primary-green: #087A3A;
+      --green-dark: #17172B;
+      --green-light: #E8F7EF;
+      --dark-neutral: #1E1B4B;
+      --body-neutral: #667085;
+      --bg-subtle: #F3F4FF;
+      --card-border: #E9E8F5;
+      --surface-white: #FFFEFF;
+      --accent-lavender: #8B7CFF;
+      --accent-lilac: #A78BFA;
+      --accent-blue: #60A5FA;
+      --accent-teal: #38BDF8;
+      --accent-coral: #FF8A65;
+    }
+    body {
+      background:
+        radial-gradient(ellipse at 86% 4%, rgba(167,139,250,.13), transparent 37%),
+        linear-gradient(135deg, #F8F7FF 0%, #F0F4FF 52%, #F5F9FF 100%);
+      color: var(--dark-neutral);
+    }
+    .device-frame, .screen-content {
+      background: linear-gradient(150deg, #F8F7FF 0%, #F0F4FF 54%, #F5F9FF 100%);
+    }
+    .status-bar, .app-bar {
+      background: rgba(255, 254, 255, .88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-color: rgba(226, 224, 243, .8);
+    }
+    .home-dashboard {
+      padding: 18px 16px 16px;
+      border-radius: 24px;
+      background: linear-gradient(140deg, rgba(255,255,255,.86), rgba(246,245,255,.78));
+      border: 1px solid rgba(255,255,255,.95);
+      box-shadow: 0 12px 34px -14px rgba(139,124,255,.22), 0 4px 14px rgba(39,45,84,.035);
+    }
+    .home-welcome { color: #1E1B4B; font-size: 22px; letter-spacing: -.55px; }
+    .home-welcome, .section-title, .app-brand, .form-label { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+    .home-location { color: #697386; }
+    .home-location i { color: var(--accent-lavender) !important; }
+    .book-action {
+      color: #fff;
+      background: linear-gradient(120deg, #17172B, #292747);
+      border-radius: 20px;
+      box-shadow: 0 12px 24px -10px rgba(40,36,76,.34), 0 4px 10px rgba(139,124,255,.12);
+    }
+    .book-action:hover { background: linear-gradient(120deg, #24223F, #37335E); }
+    .book-action .book-subtitle { color: #D8D7EA; }
+    .stats-row {
+      margin-top: 14px;
+      padding: 12px 6px;
+      border: 1px solid rgba(233,232,245,.9);
+      border-radius: 20px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 9px 24px -14px rgba(139,124,255,.28);
+    }
+    .stat-item > i { color: var(--accent-lavender) !important; }
+    .section-title { color: #1E1B4B; margin-top: 22px; }
+    .section-title > span:last-child, .section-title > a { color: var(--accent-lavender) !important; }
+    .cat-grid { gap: 11px; padding: 0 16px 5px; }
+    .cat-card {
+      flex-basis: 112px;
+      min-height: 112px;
+      border-radius: 21px;
+      border: 1px solid rgba(233,232,245,.92);
+      background: rgba(255,255,255,.92);
+      box-shadow: 0 9px 24px -14px rgba(139,124,255,.3), 0 3px 8px rgba(36,40,78,.035);
+    }
+    .cat-card:nth-child(4n+1) .cat-icon { background: #EEEAFE; color: #8373F4; }
+    .cat-card:nth-child(4n+2) .cat-icon { background: #E8F4FF; color: #5296E8; }
+    .cat-card:nth-child(4n+3) .cat-icon { background: #E5F8F3; color: #20A88C; }
+    .cat-card:nth-child(4n) .cat-icon { background: #FFF0E9; color: #ED8967; }
+    .cat-icon { border-radius: 15px; }
+    .cat-name { color: #262344; font-weight: 650; }
+    .property-carousel { padding-bottom: 10px; }
+    .prop-card-h, .card, .empty-listing {
+      border: 1px solid rgba(233,232,245,.92);
+      border-radius: 22px;
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 12px 30px -17px rgba(139,124,255,.29), 0 4px 12px rgba(34,39,75,.035);
+    }
+    .promise-box {
+      border: 1px solid #DDF1E6;
+      border-radius: 21px;
+      background: linear-gradient(120deg, rgba(232,248,241,.94), rgba(241,250,255,.94));
+      box-shadow: 0 10px 24px -18px rgba(56,189,160,.3);
+    }
+    .btn-primary {
+      background: linear-gradient(120deg, #17172B, #292747);
+      box-shadow: 0 10px 22px -12px rgba(40,36,76,.42);
+    }
+    .btn-primary:hover { background: linear-gradient(120deg, #24223F, #37335E); }
+    .btn-outline { color: #7869E8; border-color: #DAD5FF; background: #F5F3FF; }
+    .btn-primary, .btn-outline, .btn-whatsapp { border-radius: 16px; }
+    .form-control {
+      border: 1px solid #E5E4F2;
+      border-radius: 16px;
+      background: rgba(255,255,255,.94);
+      box-shadow: 0 3px 9px rgba(47,50,91,.025);
+    }
+    .form-control:focus { border-color: #A99EFF; box-shadow: 0 0 0 3px rgba(139,124,255,.13); }
+    .form-label { color: #302D52; }
+    .badge, .chip { border-radius: 999px; }
+    .badge { background: #EFEAFF; color: #6E60D4; }
+    .chip.active { background: #EDE9FF; color: #6F61D6; }
+    .urgency-btn { border-radius: 17px; }
+    .urgency-btn.selected-med, .urgency-btn.selected-low {
+      color: #6157C8; background: #F0EDFF; border-color: #CFC8FF;
+    }
+    .urgency-btn.selected-high { color: #D96A53; background: #FFF0EB; border-color: #FFD4C7; }
+    .nav-bar {
+      background: rgba(255,254,255,.88);
+      border-color: rgba(226,224,243,.85);
+      box-shadow: 0 -10px 28px -20px rgba(98,87,164,.24);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .nav-item { color: #7A8296; }
+    .nav-item.active { color: #6F61D6; }
+    .nav-item.active i { color: #6F61D6; background: #EFEAFF; }
+    .fab-whatsapp {
+      width: 54px;
+      height: 54px;
+      border: 3px solid rgba(255,255,255,.88);
+      box-shadow: 0 9px 22px -7px rgba(28,120,70,.42), 0 2px 7px rgba(30,27,75,.1);
+    }
+    .fab-whatsapp .fa-whatsapp { display: block; font-size: 25px; line-height: 1; }
+    .btn, .cat-card, .prop-card-h, .chip, .icon-btn { transition-duration: 170ms; }
+    #tab-home .home-dashboard {
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,.97), rgba(248,249,255,.94));
+      border-color: rgba(255,255,255,.98);
+      box-shadow: 0 13px 30px -19px rgba(37,44,91,.22), 0 4px 12px rgba(139,124,255,.07);
+    }
+    #tab-home .stats-row { box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 7px 18px -14px rgba(37,44,91,.22); }
+    #tab-home .section-title { letter-spacing: -.25px; }
+    #tab-home .cat-card { border-radius: 18px; box-shadow: 0 8px 19px -14px rgba(37,44,91,.24); }
+    #tab-home .prop-card-h { border-radius: 19px; box-shadow: 0 10px 24px -17px rgba(37,44,91,.25); }
+    .card, .prop-card-h, .cat-card, .empty-listing { animation: soft-arrive 300ms ease both; }
+    @keyframes soft-arrive { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Simulator Banner -->
+  <div class="simulator-header">
+    <div class="simulator-badge">
+      <i class="fa-solid fa-mobile-screen"></i> Android Preview Simulator
+    </div>
+    <div>Live Backend: <strong style="color: #4ADE80;">http://localhost:3000</strong></div>
+  </div>
+
+  <!-- Device Frame -->
+  <div class="device-frame">
+    <!-- Camera Notch / Pill -->
+    <div class="camera-pill"></div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="status-icons">
+        <i class="fa-solid fa-signal"></i>
+        <i class="fa-solid fa-wifi"></i>
+        <i class="fa-solid fa-battery-full"></i>
+      </div>
+    </div>
+
+    <!-- App Top Bar -->
+    <div class="app-bar">
+      <div class="app-brand">
+        <span>ALLFIX</span>
+      </div>
+      <div class="app-bar-actions">
+        <button class="icon-btn" title="Call Abuja Hotline" onclick="window.open('tel:+2347058099045')">
+          <i class="fa-solid fa-phone" style="color: var(--primary-green);"></i>
+        </button>
+        <button class="icon-btn" title="Email Desk" onclick="window.open('mailto:allfix456@gmail.com')">
+          <i class="fa-regular fa-envelope"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen Content Scroll Area -->
+    <div class="screen-content">
+
+      <!-- ================= TAB 1: HOME ================= -->
+      <div id="tab-home" class="tab-page active">
+        <div class="home-dashboard">
+          <div class="home-welcome">Welcome to ALLFIX</div>
+          <button class="book-action" onclick="switchTab('request')">
+            <i class="fa-solid fa-calendar-plus" style="font-size: 20px;"></i>
+            <span><span class="book-title">Book a service</span><span class="book-subtitle">Tell us what you need</span></span>
+            <i class="fa-solid fa-arrow-right book-arrow"></i>
+          </button>
+          <div class="stats-row">
+            <div class="stat-item">
+              <i class="fa-solid fa-user-check" style="color: var(--primary-green);"></i>
+              <div class="stat-val" id="stat-artisans">—</div>
+              <div class="stat-lbl">Vendor profiles</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <i class="fa-solid fa-id-badge" style="color: var(--primary-green);"></i>
+              <div class="stat-val" id="stat-requests">—</div>
+              <div class="stat-lbl">Requests</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <i class="fa-solid fa-building" style="color: var(--primary-green);"></i>
+              <div class="stat-val" id="stat-properties">—</div>
+              <div class="stat-lbl">Listings</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          <span>Services</span>
+          <span style="font-size: 12px; color: var(--primary-green); font-weight: 700;">15 Available</span>
+        </div>
+        <div class="cat-grid" id="category-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Featured Real Estate Carousel -->
+        <div class="section-title">
+          <span>Verified properties</span>
+          <a href="javascript:void(0)" onclick="switchTab('properties')" style="font-size: 12px; color: var(--primary-green); text-decoration: none; font-weight: 700;">View All</a>
+        </div>
+        <div class="property-carousel" id="home-property-carousel">
+          <!-- Populated by JS -->
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 2: BOOK SERVICE WIZARD ================= -->
+      <div id="tab-request" class="tab-page">
+        <div style="padding: 18px;">
+          <div class="badge" style="width: 100%; justify-content: center; margin-bottom: 14px;">
+            <i class="fa-solid fa-check-double"></i> Direct Human Dispatch • Audited Terms v1.0
+          </div>
+          <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 14px;">Book Verified Service</h2>
+
+          <form id="service-request-form" onsubmit="submitServiceRequest(event)">
+            <div class="form-group">
+              <label class="form-label">1. Select Service Category *</label>
+              <select id="req-category" class="form-control" onchange="handleCategoryChange()">
+                <!-- Populated by JS -->
+              </select>
+            </div>
+
+            <!-- Dynamic Branch Container -->
+            <div id="dynamic-workflow-container" class="card" style="background: var(--surface-white); padding: 14px; margin-bottom: 14px;">
+              <!-- Dynamically populated based on category -->
+            </div>
+
+            <!-- Urgency Selector -->
+            <div class="form-group">
+              <label class="form-label">3. Urgency & Dispatch Speed *</label>
+              <div class="urgency-grid">
+                <div class="urgency-btn selected-med" id="urg-med" onclick="selectUrgency('Medium')">
+                  <i class="fa-solid fa-hourglass-half"></i>
+                  <span>24–48 Hrs</span>
+                </div>
+                <div class="urgency-btn" id="urg-high" onclick="selectUrgency('High')">
+                  <i class="fa-solid fa-bolt"></i>
+                  <span>Immediate</span>
+                </div>
+                <div class="urgency-btn" id="urg-low" onclick="selectUrgency('Low')">
+                  <i class="fa-solid fa-calendar-check"></i>
+                  <span>Flexible</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Preferred Appointment Date</label>
+              <input type="date" id="req-date" class="form-control">
+            </div>
+
+            <!-- Contact Information -->
+            <div class="form-group">
+              <label class="form-label">Your Full Name *</label>
+              <input type="text" id="req-name" class="form-control" placeholder="e.g. Adeola Olawale" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Nigerian Phone / WhatsApp Number *</label>
+              <input type="tel" id="req-phone" class="form-control" placeholder="e.g. 08031234567" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Location / Area in Nigeria *</label>
+              <input type="text" id="req-location" class="form-control" placeholder="e.g. Wuse 2, Abuja" value="Abuja" required>
+            </div>
+
+            <!-- Mandatory Terms v1.0 Checkbox -->
+            <div style="display: flex; gap: 10px; align-items: flex-start; margin: 16px 0;">
+              <input type="checkbox" id="req-terms" style="margin-top: 3px; accent-color: var(--primary-green);" required>
+              <label for="req-terms" style="font-size: 12px; color: var(--body-neutral); line-height: 1.4;">
+                I accept the <strong>ALLFIX Client Terms (v1.0)</strong>. I understand that ALLFIX coordinates background-checked specialists under audited inspection clarity.
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="btn-submit-request">
+              <i class="fa-solid fa-paper-plane"></i> Submit Service Request
+            </button>
+          </form>
+
+          <!-- Request Success Box -->
+          <div id="request-success-box" class="card" style="display: none; text-align: center; margin-top: 14px;">
+            <div style="width: 56px; height: 56px; background: var(--green-light); border-radius: 50%; color: var(--primary-green); font-size: 26px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--dark-neutral);">Request Submitted!</h3>
+            <div style="font-size: 14px; font-weight: 700; color: var(--primary-green); margin: 6px 0;" id="success-req-id">REQ-12345678</div>
+            <p style="font-size: 12.5px; color: var(--body-neutral); margin-bottom: 14px;">
+              Your dispatch specialist has been assigned. Connect now via WhatsApp to finalize inspection details.
+            </p>
+            <button class="btn btn-whatsapp" id="btn-success-whatsapp">
+              <i class="fa-brands fa-whatsapp"></i> Chat with Dispatch on WhatsApp
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 3: PROPERTIES EXPLORER ================= -->
+      <div id="tab-properties" class="tab-page">
+        <div style="padding: 14px 18px 6px; background: var(--surface-white); border-bottom: 1px solid var(--card-border);">
+          <input type="text" id="prop-search" class="form-control" placeholder="Search location (Guzape, Lugbe) or type..." oninput="filterProperties()">
+        </div>
+        <div class="chips-row">
+          <div class="chip active" onclick="setPropFilter(this, 'All')">All</div>
+          <div class="chip" onclick="setPropFilter(this, 'Residential')">Residential</div>
+          <div class="chip" onclick="setPropFilter(this, 'Commercial')">Commercial</div>
+          <div class="chip" onclick="setPropFilter(this, 'Land')">Land / Plots</div>
+        </div>
+        <div style="padding: 10px 18px;" id="properties-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- ================= TAB 4: JOIN ARTISAN (VENDOR KYC) ================= -->
+      <div id="tab-vendor" class="tab-page">
+        <div style="padding: 18px;">
+          <div class="badge" style="width: 100%; justify-content: center; margin-bottom: 14px;">
+            <i class="fa-solid fa-award"></i> Verified Artisan Network Registration
+          </div>
+          <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">Join ALLFIX Network</h2>
+          <p style="font-size: 13px; color: var(--body-neutral); margin-bottom: 18px;">
+            Get consistent pre-screened client bookings across Abuja and major metropolitan centres. Criminal check & trade assessment required.
+          </p>
+
+          <form onsubmit="submitVendorKYC(event)">
+            <div class="form-group">
+              <label class="form-label">Full Legal Name *</label>
+              <input type="text" id="ven-name" class="form-control" placeholder="e.g. Tunde Bakare" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business / Enterprise Name</label>
+              <input type="text" id="ven-biz" class="form-control" placeholder="e.g. Bakare Electricals">
+            </div>
+            <div class="form-group">
+              <label class="form-label">WhatsApp / Phone Number *</label>
+              <input type="tel" id="ven-phone" class="form-control" placeholder="e.g. 08023456789" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trade Category *</label>
+              <select id="ven-category" class="form-control">
+                <option value="Home Services">Home Services (Plumbing, Electrical, Carpentry)</option>
+                <option value="Cars & Vehicles">Cars & Vehicles (Mechanic, Diagnostics)</option>
+                <option value="Construction & Land">Construction & Land</option>
+                <option value="Appliance Repairs">Appliance Repairs (AC, Generator, Fridge)</option>
+                <option value="Beauty & Personal Grooming">Beauty & Grooming</option>
+                <option value="Property Maintenance">Property Maintenance & Solar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Years of Experience *</label>
+              <input type="text" id="ven-exp" class="form-control" placeholder="e.g. 5 years" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Operating Areas Covered *</label>
+              <input type="text" id="ven-areas" class="form-control" placeholder="e.g. Wuse, Abuja" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Workshop / Office Physical Address *</label>
+              <input type="text" id="ven-address" class="form-control" placeholder="e.g. Zone 4, Wuse, Abuja" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">CAC Reg Number / NIN / Trade ID</label>
+              <input type="text" id="ven-reg" class="form-control" placeholder="e.g. CAC-BN-384910">
+            </div>
+
+            <!-- Mandatory Vendor Terms v1.0 Checkbox -->
+            <div style="display: flex; gap: 10px; align-items: flex-start; margin: 16px 0;">
+              <input type="checkbox" id="ven-terms" style="margin-top: 3px; accent-color: var(--primary-green);" required>
+              <label for="ven-terms" style="font-size: 12px; color: var(--body-neutral); line-height: 1.4;">
+                I accept the <strong>ALLFIX Vendor Terms & Code of Conduct (v1.0)</strong>. I agree to honest quotes, timely arrival, and background check verification.
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="fa-solid fa-user-plus"></i> Submit Artisan KYC Profile
+            </button>
+          </form>
+
+          <div id="vendor-success-box" class="card" style="display: none; text-align: center; margin-top: 14px;">
+            <div style="width: 56px; height: 56px; background: var(--green-light); border-radius: 50%; color: var(--primary-green); font-size: 26px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+              <i class="fa-solid fa-id-card"></i>
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: var(--dark-neutral);">Profile Submitted!</h3>
+            <p style="font-size: 13px; color: var(--body-neutral); margin: 8px 0 14px;">
+              Our Abuja dispatch vetting team will contact you via WhatsApp for trade credential review.
+            </p>
+            <button class="btn btn-whatsapp" onclick="openWhatsApp('Hello ALLFIX Onboarding Desk, I just submitted an artisan KYC application.')">
+              <i class="fa-brands fa-whatsapp"></i> Chat with Onboarding Desk
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= TAB 5: DISPATCH HQ (ADMIN PORTAL) ================= -->
+      <div id="tab-admin" class="tab-page">
+        <!-- Auth Gate -->
+        <div id="admin-auth-view" style="padding: 24px; text-align: center;">
+          <div style="width: 64px; height: 64px; background: var(--green-light); border-radius: 20px; color: var(--primary-green); font-size: 28px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 6px;">Abuja Dispatch HQ</h2>
+          <p style="font-size: 13px; color: var(--body-neutral); margin-bottom: 20px;">
+            Sign in with your dispatch administrator account to access requests and listings.
+          </p>
+
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label">Username</label>
+            <input type="text" id="admin-username" class="form-control" autocomplete="username">
+          </div>
+          <div class="form-group" style="text-align: left;">
+            <label class="form-label">Password</label>
+            <input type="password" id="admin-password" class="form-control" autocomplete="current-password">
+          </div>
+          <button class="btn btn-primary" onclick="authenticateAdmin()">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Authenticate
+          </button>
+        </div>
+
+        <!-- Authenticated Dashboard -->
+        <div id="admin-dashboard-view" style="display: none; padding: 14px 18px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 style="font-size: 17px; font-weight: 800;">Incoming Dispatch Queue</h3>
+            <button style="border: none; background: none; color: var(--urgency-high); font-weight: 700; font-size: 12px; cursor: pointer;" onclick="logoutAdmin()">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </button>
+          </div>
+
+          <div id="admin-requests-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Floating Action Button for WhatsApp Dispatch -->
+    <button class="fab-whatsapp" title="WhatsApp Dispatch" aria-label="WhatsApp Dispatch" onclick="openWhatsApp('Hello ALLFIX Xpress Dispatch HQ, I need assistance with a service booking.')">
+      <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+      <span>Dispatch HQ</span>
+    </button>
+
+    <!-- Bottom Navigation Tabs (4 Tabs) -->
+    <nav class="nav-bar">
+      <button class="nav-item active" onclick="switchTab('home')" id="nav-btn-home">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('request')" id="nav-btn-request">
+        <i class="fa-solid fa-calendar-plus"></i>
+        <span>Book</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('properties')" id="nav-btn-properties">
+        <i class="fa-solid fa-building"></i>
+        <span>Properties</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('vendor')" id="nav-btn-vendor">
+        <i class="fa-solid fa-id-card"></i>
+        <span>Artisan</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    const API_BASE = 'https://allfixservicexpress.com.ng';
+    const WHATSAPP_PHONE = '2347058099045';
+
+    // 15 Categories matching specification
+    const CATEGORIES = [
+      { id: 'prop', title: 'Property Sales & Rentals', icon: 'fa-building', type: 'property' },
+      { id: 'beauty', title: 'Beauty & Personal Grooming', icon: 'fa-scissors', type: 'general' },
+      { id: 'wellness', title: 'Wellness & Fitness', icon: 'fa-dumbbell', type: 'general' },
+      { id: 'interior', title: 'Interior Decoration & Design', icon: 'fa-couch', type: 'general' },
+      { id: 'events', title: 'Events & Catering', icon: 'fa-champagne-glasses', type: 'general' },
+      { id: 'visa', title: 'Visa & Travel Assistance', icon: 'fa-plane-departure', type: 'general' },
+      { id: 'medical', title: 'Medical Virtual Assistance', icon: 'fa-stethoscope', type: 'general' },
+      { id: 'home', title: 'Home Services', icon: 'fa-wrench', type: 'general' },
+      { id: 'cars', title: 'Cars & Vehicles', icon: 'fa-car', type: 'car' },
+      { id: 'const', title: 'Construction & Land', icon: 'fa-trowel-bricks', type: 'construction' },
+      { id: 'maint', title: 'Property Maintenance', icon: 'fa-solar-panel', type: 'general' },
+      { id: 'clean', title: 'Cleaning & Janitorial', icon: 'fa-broom', type: 'general' },
+      { id: 'appliance', title: 'Appliance Repairs', icon: 'fa-fan', type: 'general' },
+      { id: 'parts', title: 'Products & Certified Spare Parts', icon: 'fa-gear', type: 'general' },
+      { id: 'other', title: 'Other Specialist Services', icon: 'fa-toolbox', type: 'general' }
+    ];
+
+    // Only use listings returned by the live API.
+    let PROPERTIES = [];
+
+    let currentUrgency = 'Medium';
+    let currentPropFilter = 'All';
+    let adminToken = null;
+
+    // Initialize App
+    window.addEventListener('DOMContentLoaded', () => {
+      renderCategoryGrid();
+      populateCategoryDropdown();
+      renderHomeProperties();
+      renderPropertiesList();
+      fetchLiveStats();
+      fetchLiveProperties();
+      handleCategoryChange();
+    });
+
+    // WhatsApp Deep Link helper (Section 8)
+    function openWhatsApp(customText) {
+      const msg = customText || 'Hello ALLFIX Xpress, I need assistance with a service.';
+      const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-page').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      const target = document.getElementById(`tab-${tabId}`);
+      const btn = document.getElementById(`nav-btn-${tabId}`);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+
+      document.querySelector('.screen-content').scrollTop = 0;
+    }
+
+    // Render 15 Categories Grid
+    function renderCategoryGrid() {
+      const grid = document.getElementById('category-grid');
+      grid.innerHTML = CATEGORIES.map(cat => `
+        <div class="cat-card" onclick="selectCategoryFromHome('${cat.title}')">
+          <div class="cat-icon"><i class="fa-solid ${cat.icon}"></i></div>
+          <div class="cat-name">${cat.title}</div>
+        </div>
+      `).join('');
+    }
+
+    function populateCategoryDropdown() {
+      const sel = document.getElementById('req-category');
+      sel.innerHTML = CATEGORIES.map(c => `
+        <option value="${c.title}">${c.title}</option>
+      `).join('');
+    }
+
+    function selectCategoryFromHome(catTitle) {
+      const sel = document.getElementById('req-category');
+      sel.value = catTitle;
+      handleCategoryChange();
+      switchTab('request');
+    }
+
+    // Dynamic 4-Branch Form in Wizard
+    function handleCategoryChange() {
+      const sel = document.getElementById('req-category');
+      const cat = CATEGORIES.find(c => c.title === sel.value) || CATEGORIES[0];
+      const container = document.getElementById('dynamic-workflow-container');
+
+      if (cat.type === 'property') {
+        container.innerHTML = `
+          <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px;">2. Real Estate Details</div>
+          <div class="form-group">
+            <label class="form-label">Bedrooms</label>
+            <select id="dyn-bedrooms" class="form-control">
+              <option>1 Bedroom</option>
+              <option>2 Bedrooms</option>
+              <option selected>3 Bedrooms</option>
+              <option>4 Bedrooms</option>
+              <option>5+ Bedrooms / Duplex</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Budget Bracket</label>
+            <select id="dyn-prop-budget" class="form-control">
+              <option>Under ₦30M</option>
+              <option selected>₦30M – ₦70M</option>
+              <option>₦70M – ₦150M</option>
+              <option>Above ₦150M</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Specific Property Requirements</label>
+            <textarea id="dyn-desc" class="form-control" rows="2" placeholder="e.g. Detached 4-bedroom duplex in Guzape with tarred road..."></textarea>
+          </div>
+        `;
+      } else if (cat.type === 'car') {
+        container.innerHTML = `
+          <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px;">2. Vehicle Specifications</div>
+          <div class="form-group">
+            <label class="form-label">Vehicle Type</label>
+            <select id="dyn-car-type" class="form-control">
+              <option selected>SUV / Jeep</option>
+              <option>Sedan / Saloon</option>
+              <option>Hatchback</option>
+              <option>Pickup Truck</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vehicle Model & Year</label>
+            <input type="text" id="dyn-car-model" class="form-control" placeholder="e.g. Toyota RAV4 2022" value="Toyota RAV4 2022">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Issue / Service Required</label>
+            <textarea id="dyn-desc" class="form-control" rows="2" placeholder="e.g. Computer diagnostic scan, auto AC warm air, brake overhaul..." required></textarea>
+          </div>
+        `;
+      } else if (cat.type === 'construction') {
+        container.innerHTML = `
+          <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px;">2. Construction & Land Scope</div>
+          <div class="form-group">
+            <label class="form-label">Land Size</label>
+            <select id="dyn-land-size" class="form-control">
+              <option>Half Plot (250–350 sqm)</option>
+              <option selected>1 Plot (500–650 sqm)</option>
+              <option>2 Plots (1,000+ sqm)</option>
+              <option>Acreage / Hectares</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project Scope</label>
+            <textarea id="dyn-desc" class="form-control" rows="2" placeholder="e.g. Architectural blueprint CAD drawing, borehole drilling, or foundation civil build..."></textarea>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px;">2. Service Problem Description</div>
+          <div class="form-group">
+            <label class="form-label">Specific Task</label>
+            <input type="text" id="dyn-service-item" class="form-control" placeholder="e.g. Barber home visit, Generator repair, or Tiling">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Detailed Problem Description *</label>
+            <textarea id="dyn-desc" class="form-control" rows="2" placeholder="Describe the problem or exact job requirements..." required></textarea>
+          </div>
+        `;
+      }
+    }
+
+    // Urgency Selection
+    function selectUrgency(level) {
+      currentUrgency = level;
+      document.getElementById('urg-high').className = 'urgency-btn' + (level === 'High' ? ' selected-high' : '');
+      document.getElementById('urg-med').className = 'urgency-btn' + (level === 'Medium' ? ' selected-med' : '');
+      document.getElementById('urg-low').className = 'urgency-btn' + (level === 'Low' ? ' selected-low' : '');
+    }
+
+    // Submit Service Request
+    async function submitServiceRequest(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-submit-request');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+      btn.disabled = true;
+
+      const category = document.getElementById('req-category').value;
+      const descEl = document.getElementById('dyn-desc');
+      const desc = descEl ? descEl.value : 'Service booking';
+      const name = document.getElementById('req-name').value;
+      const phone = document.getElementById('req-phone').value;
+      const location = document.getElementById('req-location').value;
+      const date = document.getElementById('req-date').value;
+
+      const payload = {
+        customerName: name,
+        phone: phone,
+        category: category,
+        location: location,
+        urgency: currentUrgency,
+        preferredDate: date,
+        description: desc,
+        termsAccepted: true,
+        termsVersion: 'v1.0'
+      };
+
+      let reqId;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/requests`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || data.success !== true || !data.requestId) {
+          throw new Error(data.error || 'Request was not confirmed.');
+        }
+        reqId = data.requestId;
+      } catch (err) {
+        alert(err.message || 'Could not submit your request. Check your connection and try again.');
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Service Request';
+        btn.disabled = false;
+        return;
+      }
+
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Service Request';
+      btn.disabled = false;
+
+      // Show confirmation box
+      document.getElementById('service-request-form').style.display = 'none';
+      const succ = document.getElementById('request-success-box');
+      succ.style.display = 'block';
+      document.getElementById('success-req-id').innerText = reqId;
+
+      document.getElementById('btn-success-whatsapp').onclick = () => {
+        openWhatsApp(`Hello ALLFIX Support, I just submitted request ${reqId} for ${category}. Can you connect me with a specialist?`);
+      };
+
+    }
+
+    // Submit Vendor KYC
+    async function submitVendorKYC(e) {
+      e.preventDefault();
+      const payload = {
+        fullName: document.getElementById('ven-name').value,
+        businessName: document.getElementById('ven-biz').value,
+        phone: document.getElementById('ven-phone').value,
+        category: document.getElementById('ven-category').value,
+        experienceYears: document.getElementById('ven-exp').value,
+        operatingAreas: document.getElementById('ven-areas').value,
+        address: document.getElementById('ven-address').value,
+        termsAccepted: true,
+        termsVersion: 'v1.0'
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/vendors`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || data.success !== true || !data.vendorId) {
+          throw new Error(data.error || 'Application was not confirmed.');
+        }
+      } catch (err) {
+        alert(err.message || 'Could not submit your application. Check your connection and try again.');
+        return;
+      }
+
+      document.querySelector('#tab-vendor form').style.display = 'none';
+      document.getElementById('vendor-success-box').style.display = 'block';
+    }
+
+    // Fetch Stats
+    async function fetchLiveStats() {
+      try {
+        const res = await fetch(`${API_BASE}/api/stats`);
+        const data = await res.json();
+        if (data && data.stats) {
+          document.getElementById('stat-artisans').innerText = data.stats.verifiedVendors ?? '—';
+          document.getElementById('stat-requests').innerText = data.stats.totalRequests ?? '—';
+          document.getElementById('stat-properties').innerText = data.stats.totalProperties ?? '—';
+        }
+      } catch (_) {}
+    }
+
+    // Fetch Properties
+    async function fetchLiveProperties() {
+      try {
+        const res = await fetch(`${API_BASE}/api/properties`);
+        const data = await res.json();
+        if (data && Array.isArray(data.properties)) {
+          PROPERTIES = data.properties;
+          renderHomeProperties();
+          renderPropertiesList();
+        }
+      } catch (_) {}
+    }
+
+    // Render Home Properties Carousel
+    function renderHomeProperties() {
+      const carousel = document.getElementById('home-property-carousel');
+      if (!PROPERTIES.length) {
+        carousel.innerHTML = '<div class="empty-listing">No property listings are available right now.</div>';
+        return;
+      }
+      carousel.innerHTML = PROPERTIES.map(p => `
+        <div class="prop-card-h" onclick="inquireProperty('${p.title}', '${p.location}', '${p.id}')">
+          <img src="${p.imageUrl}" class="prop-img" alt="${p.title}">
+          <div class="prop-body">
+            <div class="prop-price">${p.price}</div>
+            <div class="prop-title">${p.title}</div>
+            <div class="prop-loc"><i class="fa-solid fa-location-dot"></i> ${p.location}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render Properties Tab List
+    function renderPropertiesList() {
+      const container = document.getElementById('properties-list');
+      const query = (document.getElementById('prop-search').value || '').toLowerCase();
+
+      const filtered = PROPERTIES.filter(p => {
+        const matchesCat = currentPropFilter === 'All' || p.propertyType.toLowerCase().includes(currentPropFilter.toLowerCase());
+        const matchesQuery = !query || p.title.toLowerCase().includes(query) || p.location.toLowerCase().includes(query);
+        return matchesCat && matchesQuery;
+      });
+
+      if (!filtered.length) {
+        container.innerHTML = '<div class="empty-listing">No property listings are available right now.</div>';
+        return;
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #94A3B8;">No properties found.</div>';
+        return;
+      }
+
+      container.innerHTML = filtered.map(p => `
+        <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 14px;">
+          <img src="${p.imageUrl}" style="width: 100%; height: 160px; object-fit: cover;">
+          <div style="padding: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 17px; font-weight: 800; color: var(--primary-green);">${p.price}</span>
+              <span class="badge" style="font-size: 11px;">${p.titleDocument}</span>
+            </div>
+            <div style="font-size: 15px; font-weight: 700; color: var(--dark-neutral); margin-bottom: 6px;">${p.title}</div>
+            <div style="font-size: 13px; color: var(--body-neutral); margin-bottom: 12px;">
+              <i class="fa-solid fa-location-dot"></i> ${p.location} • ${p.size}
+            </div>
+            <button class="btn btn-whatsapp" style="height: 40px; font-size: 13px;" onclick="inquireProperty('${p.title}', '${p.location}', '${p.id}')">
+              <i class="fa-brands fa-whatsapp"></i> Book Physical Inspection
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setPropFilter(chip, type) {
+      document.querySelectorAll('.chips-row .chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentPropFilter = type;
+      renderPropertiesList();
+    }
+
+    function filterProperties() {
+      renderPropertiesList();
+    }
+
+    function inquireProperty(title, loc, id) {
+      openWhatsApp(`Hello ALLFIX Properties, I am inquiring about ${title} in ${loc} (Ref: ${id}). Is it available for inspection?`);
+    }
+
+    // Admin authentication uses the backend session endpoint.
+    async function authenticateAdmin() {
+      const username = document.getElementById('admin-username').value.trim();
+      const password = document.getElementById('admin-password').value;
+      try {
+        const response = await fetch(`${API_BASE}/api/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+        if (!response.ok || data.success !== true || !data.token) {
+          alert(data.error || 'Sign in failed.');
+          return;
+        }
+        adminToken = data.token;
+        document.getElementById('admin-auth-view').style.display = 'none';
+        document.getElementById('admin-dashboard-view').style.display = 'block';
+        await renderAdminRequests();
+      } catch (_) {
+        alert('Could not reach admin authentication. Try again.');
+      }
+    }
+
+    async function logoutAdmin() {
+      try {
+        await fetch(`${API_BASE}/api/admin/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${adminToken}` }
+        });
+      } catch (_) {}
+      adminToken = null;
+      document.getElementById('admin-auth-view').style.display = 'block';
+      document.getElementById('admin-dashboard-view').style.display = 'none';
+      document.getElementById('admin-password').value = '';
+    }
+
+    async function renderAdminRequests() {
+      const list = document.getElementById('admin-requests-list');
+      if (!list) return;
+      let requests;
+      try {
+        const response = await fetch(`${API_BASE}/api/requests`, {
+          headers: { Authorization: `Bearer ${adminToken}` }
+        });
+        const data = await response.json();
+        if (!response.ok || !Array.isArray(data.data)) throw new Error('Queue unavailable');
+        requests = data.data;
+      } catch (_) {
+        list.innerHTML = '<div class="empty-listing">Dispatch requests could not be loaded.</div>';
+        return;
+      }
+      if (!requests.length) {
+        list.innerHTML = '<div class="empty-listing">There are no dispatch requests.</div>';
+        return;
+      }
+
+      list.innerHTML = requests.map(r => `
+        <div class="card" style="padding: 14px; margin-bottom: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="color: var(--primary-green); font-size: 13.5px;">${r.id}</strong>
+            <span style="font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 700; background: ${r.urgency === 'High' ? '#FEE2E2' : '#FEF3C7'}; color: ${r.urgency === 'High' ? 'var(--urgency-high)' : 'var(--urgency-medium)'};">
+              ${r.urgency} Urgency
+            </span>
+          </div>
+          <div style="font-weight: 700; font-size: 15px;">${r.customerName}</div>
+          <div style="font-size: 12.5px; color: var(--body-neutral);">${r.category} • ${r.location}</div>
+          <div style="background: var(--bg-subtle); padding: 8px 10px; border-radius: 8px; margin: 8px 0; font-size: 12px;">
+            ${r.description}
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <select class="form-control" style="width: 140px; padding: 4px 8px; font-size: 11.5px; font-weight: 700; color: var(--primary-green);" onchange="updateRequestStatus('${r.id}', this.value)">
+              <option value="pending_matching" ${r.status === 'pending_matching' ? 'selected' : ''}>Pending Match</option>
+              <option value="contacted" ${r.status === 'contacted' ? 'selected' : ''}>Contacted</option>
+              <option value="matched" ${r.status === 'matched' ? 'selected' : ''}>Artisan Matched</option>
+              <option value="completed" ${r.status === 'completed' ? 'selected' : ''}>Completed</option>
+            </select>
+            <button class="btn btn-whatsapp" style="width: auto; padding: 6px 14px; height: 32px; font-size: 12px;" onclick="openWhatsApp('Hello ${r.customerName}, this is ALLFIX Dispatch regarding your booking ${r.id}.')">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function updateRequestStatus(id, status) {
+      try {
+        const response = await fetch(`${API_BASE}/api/requests/update`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${adminToken}`
+          },
+          body: JSON.stringify({ id, status })
+        });
+        if (!response.ok) throw new Error('Update failed');
+      } catch (_) {
+        alert('Request status could not be updated.');
+        await renderAdminRequests();
+      }
+    }
+  </script>
+</body>
+</html>

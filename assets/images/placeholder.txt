@@ -1,0 +1,2 @@
+# Assets Directory for ALLFIX Mobile App
+Place custom brand logos and launcher icons here.
