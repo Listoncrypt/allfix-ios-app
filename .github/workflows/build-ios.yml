@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 2. Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -37,17 +37,26 @@ jobs:
           flutter config --no-enable-swift-package-manager
           flutter pub get
 
-      - name: 6. Build iOS Release Bundle (No Code-Sign)
+      - name: 6. Diagnose CocoaPods & Xcode Targets
+        run: |
+          echo "=== CocoaPods version ==="
+          pod --version
+          echo "=== Xcode project targets ==="
+          xcodebuild -list -project ios/Runner.xcodeproj 2>&1 || true
+          echo "=== Podfile targets ==="
+          grep -E "^target" ios/Podfile || true
+
+      - name: 7. Build iOS Release Bundle (No Code-Sign)
         run: flutter build ios --release --no-codesign
 
-      - name: 7. Package into .ipa Installer
+      - name: 8. Package into .ipa Installer
         run: |
           mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
           zip -r -q ALLFIX_iOS.ipa Payload
           echo "Package completed: ALLFIX_iOS.ipa"
 
-      - name: 8. Upload ALLFIX .ipa Artifact
+      - name: 9. Upload ALLFIX .ipa Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ALLFIX-iOS-iPhone-Package
@@ -55,13 +64,13 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
-      - name: 9. Compress and Upload Runner.app for Xcode/TestFlight
+      - name: 10. Compress and Upload Runner.app for Xcode/TestFlight
         run: |
           cd build/ios/iphoneos
           zip -r -q Runner.app.zip Runner.app
         continue-on-error: true
 
-      - name: 10. Upload Runner.app.zip Artifact
+      - name: 11. Upload Runner.app.zip Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ALLFIX-Runner-App-Bundle
