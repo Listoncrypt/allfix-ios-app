@@ -10,7 +10,7 @@ on:
 jobs:
   build-ios:
     name: Compile iOS .ipa on Apple Silicon Runner
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 45
 
     steps:
@@ -36,6 +36,9 @@ jobs:
         run: |
           flutter config --no-enable-swift-package-manager
           flutter pub get
+          # Upgrade shared_preferences_foundation to 2.6.1+ to fix Swift trailing-comma
+          # compiler errors (Unexpected ',' separator) on Xcode 16 / macos-15
+          flutter pub upgrade shared_preferences_foundation
 
       - name: 6. Diagnose CocoaPods & Xcode Targets
         run: |
